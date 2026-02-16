@@ -232,6 +232,9 @@
 		<link rel="stylesheet" href="./css/style.css" />
 	</head>
 	<body>
+		<audio id="tet-music" loop preload="auto" style="display:none">
+    <source src="audio/NamMoiBinhAn.mp3" type="audio/mpeg">
+</audio>
 		<!-- partial:index.partial.html -->
 		<!-- SVG Spritesheet -->
 		<div style="height: 0; width: 0; position: absolute; visibility: hidden">
@@ -371,5 +374,89 @@
 		<script src="./js/Stage.js"></script>
 		<script src="./js/MyMath.js"></script>
 		<script src="./js/script.js"></script>
+		<script>
+// Phát nhạc NGAY LẬP TỨC khi trang bắt đầu load
+(function initMusic() {
+    const audio = document.getElementById('tet-music');
+    
+    // 1. Load ngay lập tức
+    audio.load();
+    
+    // 2. Phát ngay khi có thể
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+        playPromise
+            .then(() => {
+                console.log('✅ Nhạc đã phát ngay lập tức');
+                // Giảm volume để không bị shock
+                audio.volume = 0.3;
+                // Tăng dần volume
+                let vol = 0.3;
+                const fadeIn = setInterval(() => {
+                    if (vol < 0.5) {
+                        vol += 0.05;
+                        audio.volume = vol;
+                    } else {
+                        clearInterval(fadeIn);
+                    }
+                }, 200);
+            })
+            .catch(error => {
+                console.log('⚠️ Không thể autoplay:', error);
+                // Tạo nút phát ngay khi bị chặn
+                createPlayButton();
+            });
+    }
+    
+    // 3. Dự phòng: thử lại sau 100ms
+    setTimeout(() => {
+        audio.play().catch(() => {});
+    }, 100);
+    
+    // 4. Tạo nếu bị chặn
+    function createPlayButton() {
+        const btn = document.createElement('button');
+        btn.innerHTML = '🎵 Click để bật nhạc';
+        btn.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            animation: slideDown 0.3s, pulse 1.5s infinite;
+        `;
+        
+        btn.onclick = function() {
+            audio.play();
+            this.remove();
+        };
+        
+        document.body.appendChild(btn);
+    }
+})();
+</script>
+
+<style>
+@keyframes slideDown {
+    from { top: -100px; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+@keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+</style>
 	</body>
 </html>
