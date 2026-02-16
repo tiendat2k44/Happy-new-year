@@ -4,3 +4,5 @@ rồi kéo ảnh của bạn vào trong folder
 nếu đuôi ảnh của bạn khác jpeg thì hãy vào file script.js trong folder js và vào dòng 88 để sửa lại đuôi ảnh 
 
 đổi câu chúc trong dòng 547 file script.js"# Happy-new-year" 
+
+Copyright by DaoTienDat
